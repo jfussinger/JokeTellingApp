@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.2'
+    }
+}
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.3"
+
+    defaultConfig {
+        applicationId "com.udacity.gradle.builditbigger"
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //https://stackoverflow.com/questions/53471917/all-flavors-must-now-belong-to-a-named-flavor-dimension-android-studio-ndk
+    //Paid Free YouTube
+    //https://www.youtube.com/watch?v=mxhNJ710EmI
+
+    //https://stackoverflow.com/questions/36209947/alter-android-package-names-for-free-paid-app-flavors-in-git
+
+    flavorDimensions "flavorVersion"
+    productFlavors {
+        free {
+            dimension "flavorVersion"
+            applicationId "com.udacity.gradle.builditbigger.free"
+        }
+        paid {
+            dimension "flavorVersion"
+            applicationId "com.udacity.gradle.builditbigger.paid"
+        }
+    }
+
+//Installing Google Cloud SDK on MacOS
+//https://www.youtube.com/watch?v=IF09pGo833g
+//https://cloud.google.com/sdk/docs/#mac
+
+//Setup Cloud SDK section
+//https://www.youtube.com/watch?v=eGVc_WFzXtw
+//https://cloud.google.com/endpoints/docs/frameworks/java/migrating-android#cloudsdk
+
+//appengineStart Error in Project - backend - tasks
+//https://study-hall.udacity.com/rooms/community:nd801:630718-project-61/community:thread-10914652057-633140?contextType=room
+
+//appengineStart Error solution in <runtime>java8</runtime> in appengine-web.xml
+//https://knowledge.udacity.com/questions/41829
+
+    dependencies {
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+        endpointsServer project(path: ':backend', configuration: 'endpoints')
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        //https://stackoverflow.com/questions/18196974/how-to-define-different-dependencies-for-different-product-flavors
+        freeImplementation 'com.google.android.gms:play-services-ads:11.8.0'
+        implementation 'com.google.api-client:google-api-client:1.23.0'
+        implementation 'com.google.http-client:google-http-client-android:1.23.0'
+        implementation 'com.google.code.findbugs:jsr305:3.0.1'
+
+        implementation project(':javaLibrary')
+        implementation project(':myAndroidLibrary')
+
+        androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+            exclude group: 'com.android.support', module: 'support-annotations'
+        })
+
+        testImplementation 'junit:junit:4.12'
+    }
+}
